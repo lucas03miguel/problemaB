@@ -1,59 +1,54 @@
-count = 0
+from itertools import combinations
+from math import factorial
 
-def solve_grid_card_assignments(c, r):
-    global count
-    grid = [[0 for _ in range(nc)] for _ in range(nr)]
-    
-    row_totals = [0] * nr
-    col_totals = [0] * nc
-    
-    generate_assignments(grid, row_totals, col_totals, 0, 0, c, r)
-    
-    return count
+def binomial(n, k):
+    return factorial(n) // (factorial(k) * factorial(n - k))
 
-
-def generate_assignments(grid, row_totals, col_totals, row, col, c, r):
-    global count
-    if row == nr:
-        if is_valid_assignment(row_totals, col_totals, c, r):
-            count += 1
-        return
+def aztec(n, m, x, y):
+    if m == n and x == y and x == 1:
+        return factorial(n)
+    if m != n and x != y:
+        return binomial(n, x)
     
-    if col == nc:
-        generate_assignments(grid, row_totals, col_totals, row + 1, 0, c, r)
-        return
-    
-    grid[row][col] = 1
-    row_totals[row] = row_totals[row] + 1
-    col_totals[col] = col_totals[col] + 1
-    generate_assignments(grid, row_totals, col_totals, row, col + 1, c, r)
-    
-    grid[row][col] = 0
-    row_totals[row] = row_totals[row] - 1
-    col_totals[col] = col_totals[col] - 1
-    generate_assignments(grid, row_totals, col_totals, row, col + 1, c, r)
+    print("bi: ", binomial(n, x))
+    print("fac: ", factorial(n))
 
 
-def is_valid_assignment(row_totals, col_totals, c, r):
-    for i in range(nr):
-        if row_totals[i] != r:
-            return False
-    
-    for j in range(nc):
-        if col_totals[j] != c:
-            return False
-    
-    return True
+    total_zeros = x * m
+    if total_zeros != y * n:
+        return 0
+
+    matrix_size = n * m
+    dp = [[0] * (y + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
+
+    for i in range(1, n + 1):
+        for j in range(y + 1):
+            for k in range(min(j, m) + 1):
+                dp[i][j] += dp[i - 1][j - k] * binomial(m, k)
+
+    print(dp)
+    valid_combinations = 0
+    for positions in dp:
+        matrix = [[0] * m for _ in range(n)]
+        for pos in positions:
+            row, col = divmod(pos, m)
+            matrix[row][col] = 1
+
+        if all(sum(row) == y for row in matrix) and all(sum(col) == x for col in zip(*matrix)):
+            valid_combinations += 1
+        
+    return valid_combinations
 
 
 def main():
-    global nc, nr
     T = int(input())
     for _ in range(T):
-        nc, nr = map(int, input().split())
+        columns, rows = map(int, input().split())
         c, r = map(int, input().split())
+        G = [[0 for _ in range(columns)] for _ in range(rows)]
 
-        result = solve_grid_card_assignments(c, r)
+        result = aztec(rows, columns, c, r)
         print(result)
 
 

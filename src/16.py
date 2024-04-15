@@ -3,13 +3,15 @@ def aztec(G, c, r, rows, columns):
         return factorial(rows)
     if columns != rows and c != r:
         return binomial(rows, c)
+    
+    return "ola"
 
 
-def binomial(n: int, k: int) -> int:
+def binomial(n, k):
     return factorial(n) // (factorial(k) * factorial(n - k))
 
 
-def factorial(number: int) -> int:
+def factorial(number):
     return 1 if number == 0 or number == 1 else number * factorial(number - 1)
 
 
