@@ -35,7 +35,7 @@ def main():
         c, r = map(int, input().split())
 
         if c > rows or r > columns or c < 1 or c > 7 or r < 1 or r > 7 or columns < 1 or columns > 24 or rows < 1 or rows > 24:
-            outln(0)
+            print(0)
             continue
 
         colCount = [0] * columns
