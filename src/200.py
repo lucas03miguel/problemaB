@@ -1,12 +1,3 @@
-from sys import stdin, stdout
-
-def readln():
-    return stdin.readline().rstrip()
-
-def outln(n):
-    stdout.write(str(n))
-    stdout.write("\n")
-
 def aztec(rows, columns, c, r, i, j, colCount, rowCount, dp):
     if rows * r != columns * c:
         return 0
@@ -37,11 +28,11 @@ def aztec(rows, columns, c, r, i, j, colCount, rowCount, dp):
 
 
 def main():
-    T = int(readln())
+    T = int(input())
 
     for _ in range(T):
-        columns, rows = map(int, readln().split())
-        c, r = map(int, readln().split())
+        columns, rows = map(int, input().split())
+        c, r = map(int, input().split())
 
         if c > rows or r > columns or c < 1 or c > 7 or r < 1 or r > 7 or columns < 1 or columns > 24 or rows < 1 or rows > 24:
             outln(0)
@@ -52,7 +43,7 @@ def main():
         dp = {}
 
         result = aztec(rows, columns, c, r, 0, 0, colCount, rowCount, dp)
-        outln(result)
+        print(result)
 
 
 if __name__ == "__main__":
