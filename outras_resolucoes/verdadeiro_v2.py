@@ -1,24 +1,31 @@
-from sys import stdin,stdout
-
-def readln():
-  return stdin.readline().rstrip()
-
-def outln(n):
-  stdout.write(str(n))
-  stdout.write("\n")
+def binomial(n, k):
+    return factorial(n) // (factorial(k) * factorial(n - k))
 
 # Calcula os fatoriais previamente para evitar repetição de cálculos
 factorials = [1]
 
-for i in range(1, 25):
+for i in range(1, 101):
     factorials.append(factorials[-1] * i)
+
+fac = [quit1]
+def factorial(n):
+    if len(fac) < n:
+        for i in range(len(fac), n + 1):
+            fac.append(-1)
+    print(n)
+    print(fac)
+    if fac[n] != -1:
+        return fac[n]
+    
+    if n == 0:
+        return 1
+    fac[n] = n * factorial(n - 1)
+    return fac[n]
 
 def aztec(rows, columns, c, r, i, j, colCount, rowCount, dp):
     #Casos mais simples
-    if columns == rows == 1:
-        return 1
     if columns == rows and c == r and c == 1:
-        return factorials[rows]
+        return factorial(rows)
     if columns != rows and c != r:
         return binomial(rows, c)
     
@@ -54,20 +61,18 @@ def aztec(rows, columns, c, r, i, j, colCount, rowCount, dp):
 
     return count
 
-def binomial(n, k):
-    return factorials[n] // (factorials[k] * factorials[n - k])
 
 def main():
-    T = int(readln())
+    T = int(input())
     for _ in range(T):
-        columns, rows = map(int, readln().split())
-        c, r = map(int, readln().split())
+        columns, rows = map(int, input().split())
+        c, r = map(int, input().split())
         colCount = [0] * columns
         rowCount = [0] * rows
         dp = {}
 
         result = aztec(rows, columns, c, r, 0, 0, tuple(colCount), tuple(rowCount), dp)
-        outln(result)
+        print(result)
 
 
 if __name__ == "__main__":

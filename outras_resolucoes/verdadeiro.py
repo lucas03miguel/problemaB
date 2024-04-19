@@ -1,14 +1,9 @@
-from collections import defaultdict
+from math import factorial
 
-# Calcula os fatoriais previamente para evitar repetição de cálculos
-factorials = [1]
-for i in range(1, 101):
-    factorials.append(factorials[-1] * i)
-
-def aztec(rows: int, columns: int, c: int, r: int, i: int, j: int, colCount: tuple[int], rowCount: tuple[int], dp: dict[tuple[int], int]) -> int:
+def aztec(rows, columns, c, r, i, j, colCount, rowCount, dp):
     #Casos mais simples
     if columns == rows and c == r and c == 1:
-        return factorials[rows]
+        return factorial(rows)
     if columns != rows and c != r:
         return binomial(rows, c)
     
@@ -24,7 +19,10 @@ def aztec(rows: int, columns: int, c: int, r: int, i: int, j: int, colCount: tup
             return 0
         return aztec(rows, columns, c, r, i + 1, 0, colCount, rowCount, dp)
 
-    key = colCount + (i, j)
+    key = colCount.copy()
+    key.append(i)
+    key.append(j)
+    key = tuple(key)
 
     if key in dp:
         return dp[key]
@@ -32,11 +30,11 @@ def aztec(rows: int, columns: int, c: int, r: int, i: int, j: int, colCount: tup
     count = 0
 
     if colCount[j] < c and rowCount[i] < r:
-        newColCount = list(colCount)
-        newRowCount = list(rowCount)
-        newColCount[j] += 1
-        newRowCount[i] += 1
-        count += aztec(rows, columns, c, r, i, j + 1, tuple(newColCount), tuple(newRowCount), dp)
+        colCount[j] += 1
+        rowCount[i] += 1
+        count += aztec(rows, columns, c, r, i, j + 1, colCount, rowCount, dp)
+        colCount[j] -= 1
+        rowCount[i] -= 1
 
     count += aztec(rows, columns, c, r, i, j + 1, colCount, rowCount, dp)
 
@@ -44,19 +42,19 @@ def aztec(rows: int, columns: int, c: int, r: int, i: int, j: int, colCount: tup
 
     return count
 
-def binomial(n: int, k: int) -> int:
-    return factorials[n] // (factorials[k] * factorials[n - k])
+def binomial(n, k):
+    return factorial(n) // (factorial(k) * factorial(n - k))
 
-def main() -> None:
+def main():
     T = int(input())
     for _ in range(T):
         columns, rows = map(int, input().split())
         c, r = map(int, input().split())
         colCount = [0] * columns
         rowCount = [0] * rows
-        dp = defaultdict(int)
+        dp = {}
 
-        result = aztec(rows, columns, c, r, 0, 0, tuple(colCount), tuple(rowCount), dp)
+        result = aztec(rows, columns, c, r, 0, 0, colCount, rowCount, dp)
         print(result)
 
 
